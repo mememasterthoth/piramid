@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiRaMID Whitepaper - Technical Specifications & Design Strategy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #1a1a1a;
+            --secondary-bg: #2a2a2a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #c0c0c0;
+            --accent-color: #00ffff;
+            --border-color: #3a3a3a;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav-header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Main Content Container */
+        .whitepaper-container {
+            max-width: 1000px;
+            margin: 80px auto 0;
+            padding: 2rem;
+        }
+
+        /* Header Section */
+        .whitepaper-header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 3rem;
+        }
+
+        .whitepaper-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ffff, #0080ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .whitepaper-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-item {
+            margin-bottom: 0.75rem;
+            padding-left: 1rem;
+        }
+
+        .toc-item a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .toc-item a:hover {
+            color: var(--accent-color);
+        }
+
+        .toc-number {
+            margin-right: 0.75rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .toc-subitem {
+            margin-left: 2rem;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        .content-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Lists */
+        .content-list {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-list li {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Highlighted Boxes */
+        .highlight-box {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+
+        .highlight-box h4 {
+            color: var(--accent-color);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Tables */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .spec-table th,
+        .spec-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-table th {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .spec-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Download Button */
+        .download-section {
+            text-align: center;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--secondary-bg);
+            border-radius: 10px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--accent-color);
+            color: var(--primary-bg);
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .whitepaper-container {
+                padding: 1rem;
+            }
+            
+            .whitepaper-title {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .spec-table {
+                font-size: 0.875rem;
+            }
+            
+            .spec-table th,
+            .spec-table td {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .nav-header,
+            .download-section {
+                display: none;
+            }
+            
+            .content-section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-header">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">PiRaMID</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#introduction">Introduction</a>
+                <a href="#architecture">Architecture</a>
+                <a href="#specifications">Specifications</a>
+                <a href="#download">Download PDF</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="whitepaper-container">
+        <!-- Header -->
+        <header class="whitepaper-header">
+            <h1 class="whitepaper-title">PiRaMID Whitepaper</h1>
+            <p class="whitepaper-subtitle">A Foundational Design & Strategy Report for a Decentralized Computing & Networking Device</p>
+        </header>
+
+        <!-- Table of Contents -->
+        <section class="toc">
+            <h2 class="toc-title">Table of Contents</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#introduction">
+                        <span class="toc-number">1.</span>
+                        Introduction: The PiRaMID Vision
+                    </a>
+                    <ul class="toc-list toc-subitem">
+                        <li><a href="#executive-overview">Executive Overview</a></li>
+                        <li><a href="#architectural-pillars">Architectural Pillars</a></li>
+                        <li><a href="#market-positioning">Market Positioning</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#architecture">
+                        <span class="toc-number">2.</span>
+                        System Architecture & Component Specification
+                    </a>
+                    <ul class="toc-list toc-subitem">
+                        <li><a href="#layered-philosophy">Layered Compute & Networking Philosophy</a></li>
+                        <li><a href="#component-analysis">Component Analysis and Selection</a></li>
+                        <li><a href="#system-subsystems">System-Wide Subsystems</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#physical-design">
+                        <span class="toc-number">3.</span>
+                        Physical & Industrial Design Specifications
+                    </a>
+                    <ul class="toc-list toc-subitem">
+                        <li><a href="#chassis-design">Chassis Design, Materials, and Manufacturing</a></li>
+                        <li><a href="#thermal-management">Advanced Thermal Management System</a></li>
+                        <li><a href="#port-layout">Port Layout, Cabling, and Serviceability</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#marketing">
+                        <span class="toc-number">4.</span>
+                        Marketing Framework & Go-to-Market Strategy
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="content-section">
+            <h2 class="section-title">Introduction: The PiRaMID Vision - Redefining Digital Sovereignty</h2>
+            
+            <div id="executive-overview">
+                <h3 class="subsection-title">Executive Overview</h3>
+                <p class="content-text">
+                    This document presents the foundational design and strategic framework for the PiRaMID, a revolutionary device engineered to redefine the relationship between individuals and their digital lives. The PiRaMID is not merely an incremental improvement on existing technology but represents the genesis of a new product category: the Personal Network & Compute Appliance.
+                </p>
+                <p class="content-text">
+                    Its core mission is to "Free the Internet" for the end-user by unifying three critical digital functions that are currently fragmented across multiple, often insecure, devices: resilient connectivity, private computing, and decentralized networking. By consolidating these capabilities into a single, powerful, and secure platform, the PiRaMID provides the physical manifestation of digital sovereignty, empowering users with unprecedented control, privacy, and performance.
+                </p>
+                <p class="content-text">
+                    This report serves as the single source of truth for its development, providing the detailed specifications required to guide engineering, design, marketing, and software development efforts.
+                </p>
+            </div>
+
+            <div id="architectural-pillars">
+                <h3 class="subsection-title">Architectural Pillars</h3>
+                <p class="content-text">
+                    The PiRaMID's architecture is built upon three foundational design principles, each meticulously chosen to support the device's core mission:
+                </p>
+                <ol class="content-list">
+                    <li>
+                        <strong>Converged Compute Architecture:</strong> The device moves beyond the inefficiency of physically separate systems. It employs a powerful, centralized x86-64 processor governed by a Type-1 hypervisor. This architecture virtualizes the "3 Computers"—a high-performance Windows environment, a secure Linux server, and a versatile Android media system—on a single hardware platform.
+                    </li>
+                    <li>
+                        <strong>Unified Connectivity Fabric:</strong> The PiRaMID integrates a diverse array of Wide Area Network (WAN) technologies, including Fiber/Ethernet, 4G/5G cellular, and satellite (Starlink), into a single, intelligent network fabric managed by an advanced, kernel-level mesh networking protocol, B.A.T.M.A.N.-adv.
+                    </li>
+                    <li>
+                        <strong>Form-Follows-Function Industrial Design:</strong> The iconic pyramid form factor is a deliberate engineering choice. This unique geometry is designed to solve the critical challenge of thermal management for a high-TDP, multi-system device, creating a natural convection effect.
+                    </li>
+                </ol>
+            </div>
+
+            <div id="market-positioning">
+                <h3 class="subsection-title">Market Positioning</h3>
+                <p class="content-text">
+                    The PiRaMID is positioned to disrupt a market currently served by a disparate collection of single-purpose devices, including high-end mesh routers, Network Attached Storage (NAS) servers, and compact Mini-PCs. By consolidating the functions of these devices into a single, cohesive, and future-proof solution, the PiRaMID targets a discerning audience of power users, privacy advocates, remote professionals, and digital nomads.
+                </p>
+                <p class="content-text">
+                    The alternative product names, "Ivory Tower" and "Infinity Mesh," are not arbitrary; they are marketing concepts directly derived from the architectural pillars of sovereign computing and resilient connectivity, respectively.
+                </p>
+            </div>
+        </section>
+
+        <!-- System Architecture Section -->
+        <section id="architecture" class="content-section">
+            <h2 class="section-title">Part I: System Architecture & Component Specification</h2>
+            
+            <div id="layered-philosophy">
+                <h3 class="subsection-title">Section 1.1: The Layered Compute & Networking Philosophy</h3>
+                
+                <h4>Architectural Rationale</h4>
+                <p class="content-text">
+                    The internal structure of the PiRaMID is organized into a distinct, four-layer vertical stack, culminating in a capstone module. This layered design is a strategic approach to thermal and functional zoning, ensuring that each component operates within its optimal performance envelope while minimizing interference and maximizing system stability.
+                </p>
+
+                <div class="highlight-box">
+                    <h4>Layer Architecture Overview</h4>
+                    <ul class="content-list">
+                        <li><strong>Layer 1 (User Compute):</strong> Houses the primary high-TDP x86-64 compute platform at the base</li>
+                        <li><strong>Layer 2 (Network Core):</strong> Contains the Wi-Fi module and Gigabit Ethernet switch</li>
+                        <li><strong>Layer 3 (Mesh Control):</strong> Dedicated ARM-based SBC for all networking functions</li>
+                        <li><strong>Layer 4 (Capstone):</strong> Low-power radio modules, removable webcam, and system status display</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="component-analysis">
+                <h3 class="subsection-title">Section 1.2: Component Analysis and Selection</h3>
+                
+                <h4>Layer 4 (Capstone): Sensory and Short-Range Communications Array</h4>
+                <p class="content-text">
+                    The capstone serves as the primary user interaction point and houses the device's short-range communication and sensory hardware:
+                </p>
+                <ul class="content-list">
+                    <li><strong>Bluetooth Module:</strong> Dedicated Bluetooth 5.3 module for optimal antenna placement</li>
+                    <li><strong>Broad Spectrum Radio Module:</strong> SDR module based on RTL2832U chipset for flexibility</li>
+                    <li><strong>Removable Webcam:</strong> 1080p USB webcam that is physically detachable for absolute privacy</li>
+                    <li><strong>Power Button & Status Display:</strong> 128x64 monochrome OLED display with SSD1306 controller</li>
+                </ul>
+
+                <h4>Layer 3 (Mesh Control): The BATMAN-adv Kernel and SBC</h4>
+                <table class="spec-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Processor</th>
+                            <th>RAM</th>
+                            <th>Connectivity</th>
+                            <th>Power</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Odroid N2+ (Recommended)</td>
+                            <td>Amlogic S922X (6-core)</td>
+                            <td>2/4GB DDR4</td>
+                            <td>1x GbE, 4x USB 3.0</td>
+                            <td>~2.0W / ~6.5W</td>
+                            <td>$80-$90</td>
+                        </tr>
+                        <tr>
+                            <td>FriendlyElec NanoPi R6S</td>
+                            <td>Rockchip RK3588S</td>
+                            <td>8GB LPDDR4X</td>
+                            <td>2x 2.5GbE, 1x GbE</td>
+                            <td>~2.5W / ~8.0W</td>
+                            <td>$119</td>
+                        </tr>
+                        <tr>
+                            <td>Orange Pi 5 Plus</td>
+                            <td>Rockchip RK3588</td>
+                            <td>4/8/16GB LPDDR4</td>
+                            <td>2x 2.5GbE, 2x USB 3.0</td>
+                            <td>~3.0W / ~10W</td>
+                            <td>$130+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="system-subsystems">
+                <h3 class="subsection-title">Section 1.3: System-Wide Subsystems</h3>
+                
+                <h4>Power Architecture & Budget</h4>
+                <p class="content-text">
+                    A robust and efficient power system is critical to the stability of the multi-component PiRaMID:
+                </p>
+                <ul class="content-list">
+                    <li><strong>Primary Power Supply:</strong> External 240W to 300W power adapter</li>
+                    <li><strong>Internal Power Distribution:</strong> Custom PDB or high-capacity pico-PSU</li>
+                    <li><strong>Optional Battery Pack:</strong> 32,000 mAh external battery for UPS functionality</li>
+                </ul>
+
+                <table class="spec-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Idle Power</th>
+                            <th>Max Load Power</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Layer 1: Minisforum MS-01</td>
+                            <td>~27W</td>
+                            <td>~115W</td>
+                        </tr>
+                        <tr>
+                            <td>Layer 3: Odroid N2+ SBC</td>
+                            <td>~2W</td>
+                            <td>~6.5W</td>
+                        </tr>
+                        <tr>
+                            <td>Layer 2: Intel AX210 Wi-Fi</td>
+                            <td>~0.5W</td>
+                            <td>~2.5W</td>
+                        </tr>
+                        <tr>
+                            <td>Storage: 1TB NVMe SSD</td>
+                            <td>~1W</td>
+                            <td>~8W</td>
+                        </tr>
+                        <tr>
+                            <td>Cooling: 2x 120mm Fans</td>
+                            <td>~0.5W</td>
+                            <td>~5W</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total System Power</strong></td>
+                            <td><strong>~33W</strong></td>
+                            <td><strong>~147W</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Physical Design Section -->
+        <section id="physical-design" class="content-section">
+            <h2 class="section-title">Part II: Physical & Industrial Design Specifications</h2>
+            
+            <div id="chassis-design">
+                <h3 class="subsection-title">Section 2.1: Chassis Design, Materials, and Manufacturing</h3>
+                
+                <h4>Form Factor</h4>
+                <p class="content-text">
+                    The PiRaMID's chassis will be a four-sided pyramid, a form that is both visually striking and functionally superior for thermal management. The design draws inspiration from existing pyramid cases like the AZZA PYRAMID but is purpose-built to accommodate the unique layered internal architecture.
+                </p>
+
+                <h4>Materials</h4>
+                <ul class="content-list">
+                    <li><strong>Frame & Heatsink:</strong> High-grade 6061 aluminum alloy with Type II anodization</li>
+                    <li><strong>Side Panels:</strong> 4mm thick tempered glass (2 sides) for component showcase</li>
+                    <li><strong>Internal Brackets:</strong> Lightweight aluminum or high-performance polymer (PEI/PPS)</li>
+                </ul>
+            </div>
+
+            <div id="thermal-management">
+                <h3 class="subsection-title">Section 2.2: Advanced Thermal Management System</h3>
+                
+                <div class="highlight-box">
+                    <h4>Hybrid Passive-Active Design</h4>
+                    <p>The thermal management system is engineered to silently and efficiently dissipate substantial thermal loads (140W+) through:</p>
+                    <ul class="content-list">
+                        <li><strong>Passive Components:</strong> External heatsink array and copper heat pipes</li>
+                        <li><strong>Active Components:</strong> 120mm PWM fans with thermostatic control</li>
+                        <li><strong>Chimney Effect:</strong> Natural convection enhanced by pyramid geometry</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marketing Section -->
+        <section id="marketing" class="content-section">
+            <h2 class="section-title">Part III: Marketing Framework & Go-to-Market Strategy</h2>
+            
+            <h3 class="subsection-title">Core Marketing Pillars</h3>
+            
+            <div class="highlight-box">
+                <h4>Pillar 1: Unbreakable Connectivity (The "Infinity Mesh")</h4>
+                <p>Multi-WAN load balancing with automated failover across Ethernet, 4G/5G, and Starlink connections. Advanced Wi-Fi 6E with dedicated 6 GHz backhaul for inter-node communication.</p>
+                <p><strong>Tagline:</strong> "Your Internet, Uninterrupted. The Infinity Mesh intelligently bonds satellite, cellular, and broadband for a connection that never quits."</p>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Pillar 2: Sovereign Computing (The "Ivory Tower")</h4>
+                <p>Local virtualization of multiple operating systems, secure Proxmox hypervisor, physically removable webcam, and integrated Z-Wave hub for private smart home ecosystem.</p>
+                <p><strong>Tagline:</strong> "Your data. Your rules. The Ivory Tower puts you back in control of your digital life."</p>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Pillar 3: Converged Power</h4>
+                <p>Three computers in one device - Windows for productivity and gaming, Linux for development and hosting, Android for media and entertainment.</p>
+                <p><strong>Tagline:</strong> "Desktop. Server. Media Center. All in one revolutionary device."</p>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section id="download" class="download-section">
+            <h3>Get the Complete Technical Documentation</h3>
+            <p class="content-text">Download the full PiRaMID whitepaper for comprehensive technical specifications, detailed component analysis, and implementation guidelines.</p>
+            <a href="attached_assets/PiRaMID Device Detailed Specifications__1753490561760.pdf" class="download-btn" download>
+                <i class="fas fa-download"></i>
+                Download Full PDF (1.1MB)
+            </a>
+        </section>
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add active state to current section in view
+        const sections = document.querySelectorAll('.content-section');
+        const navLinks = document.querySelectorAll('.toc-item a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
